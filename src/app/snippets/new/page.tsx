@@ -22,7 +22,6 @@ const createSnippet = async (formData: FormData) => {
       code,
     },
   });
-  console.log(snippet);
   redirect("/");
 };
 
