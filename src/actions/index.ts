@@ -29,3 +29,43 @@ export const deleteSnippet = async (id: number) => {
 
   redirect("/");
 };
+
+export const createSnippet = async (
+  formState: { message: string },
+  formData: FormData
+) => {
+  try {
+    const title = formData.get("title");
+    const code = formData.get("code");
+    if (typeof title !== "string" || title.length < 3) {
+      return {
+        message: "Title must be a string with length greater than 3",
+      };
+    }
+    if (typeof code !== "string" || code.length < 10) {
+      return {
+        message: "Code must be a string with length greater than 10",
+      };
+    }
+    // Create a new record in the database.
+    const snippet = await db.snippet.create({
+      data: {
+        title,
+        code,
+      },
+    });
+
+    // throw new Error("Failed to create snippet");
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return {
+        message: error.message,
+      };
+    } else {
+      return {
+        message: "Oops! Something went wrong.",
+      };
+    }
+  }
+  redirect("/");
+};

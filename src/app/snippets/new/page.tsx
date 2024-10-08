@@ -1,33 +1,14 @@
-import { db } from "@/db";
-import { redirect } from "next/navigation";
+"use client";
 import React from "react";
-
-const createSnippet = async (formData: FormData) => {
-  // This need to be a server action!
-  "use server";
-
-  // Check the user's input and make sure they're valid.
-  const title = formData.get("title") as string;
-  const code = formData.get("code") as string;
-
-  if (!title || !code) {
-    console.error("Title and code are required.");
-    return;
-  }
-
-  // Create a new record in the database.
-  const snippet = await db.snippet.create({
-    data: {
-      title,
-      code,
-    },
-  });
-  redirect("/");
-};
+import { useFormState } from "react-dom";
+import * as actions from "@/actions";
 
 const SnippetCreatePage = () => {
+  const [formState, action] = useFormState(actions.createSnippet, {
+    message: "",
+  });
   return (
-    <form action={createSnippet}>
+    <form action={action}>
       <h3 className="font-bold m-3">Create a Snippet</h3>
       <div className="flex flex-col gap-4">
         <div className="flex gap-4">
@@ -52,6 +33,25 @@ const SnippetCreatePage = () => {
             rows={10}
           />
         </div>
+        {/* 1st way */}
+
+        {/* <div className="my-2 p-2 bg-red-200 border rounded border-red-400">{formState?.message}</div> */}
+
+        {/* 2nd way */}
+
+        {/* {formState.message ? (
+          <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
+            {formState.message}
+          </div>
+        ) : null} */}
+
+        {/* 3rd way */}
+
+        {formState.message && (
+          <div className="my-2 p-2 bg-red-200 border rounded border-red-400">
+            {formState.message}
+          </div>
+        )}
         <button type="submit" className=" p-2 rounded bg-blue-200">
           Create
         </button>
