@@ -1,6 +1,7 @@
 "use server";
 
 import { db } from "@/db";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 interface IEditeSnippetProps {
@@ -16,7 +17,7 @@ export const editSnippet = async ({ id, code }: IEditeSnippetProps) => {
       code,
     },
   });
-
+  revalidatePath(`/snippets/${id}`);
   redirect(`/snippets/${id}`);
 };
 
@@ -26,7 +27,7 @@ export const deleteSnippet = async (id: number) => {
       id,
     },
   });
-
+  revalidatePath("/");
   redirect("/");
 };
 
@@ -67,5 +68,6 @@ export const createSnippet = async (
       };
     }
   }
+  revalidatePath("/");
   redirect("/");
 };
